@@ -29,25 +29,66 @@ void build_graph_cmd(pgraph g) {
             g->nodes = newNode;
             temp = &(newNode->next);
 
-        } else {
+        }
+        else {
             newNode->next = *temp;
             *temp = newNode;
             temp = &(newNode->next);
 
         }
     }
-    int num=g->nodes[2].node_num;
+//    int num=g->nodes[2].node_num;
     char cur;
-//    scanf("%d", &cur);
-//    if(cur == 'n'){
-//
-//    }
+    scanf("%d", &cur);
+
+    while(cur!='A' && cur!='B' && cur!='T' && cur!='S' && cur!='D'){
+        if(cur == 'n'){
+            scanf("%d", &cur);
+            temp = g->nodes[cur]->edges;
+            while(cur!='n'){
+                int end;
+                scanf("%d", &cur);
+                end = cur;
+                create_edge(temp, end);
+            }
+
+        }
+    }
 
 
 
 }
 
-void insert_node_cmd(pnode *head) {
+void insert_node_cmd(pgraph g) {
+    int id=0;
+    int exist=0; // in order to know if the node is already exist
+    scanf("%d", &id);
+    pnode head;
+    head = (pnode) malloc(sizeof(node));
+    if (head == NULL) { // if there is no place in memory to allocate
+        printf("Memory not allocated");
+        exit(1);
+    }
+    g->nodes = head;
+    for(int i=0; i<g->nodeSize; i++){
+        if(exist == 1){
+            break;
+        }
+        if(id == head.node_num){
+            exist=1;
+            while(head.edges!=NULL){
+                free(head.edges);
+                head.edges = head.edges->next;
+            }
+        }
+        head = head->next;
+    }
+    if(exist == 0){
+        while(head->next!=NULL){
+            head = head->next;
+        }
+        head->next = create_node(id);
+    }
 
 }
 
@@ -86,7 +127,6 @@ pnode create_node(int id) {
 }
 
 void create_edge(pedge *e, int endpoint) {
-
     pedge newEdge;
     newEdge = (pedge) malloc(sizeof(edge));
     if (newEdge == NULL) { // if there is no place in memory to allocate

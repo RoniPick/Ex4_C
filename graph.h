@@ -33,7 +33,7 @@ typedef struct GRAPH_{
 } graph, *pgraph;
 
 void build_graph_cmd(pgraph g);
-void insert_node_cmd(pnode *head);
+void insert_node_cmd(pgraph g);
 void delete_node_cmd(pnode *head);
 void printGraph_cmd(pnode head); //for self debug
 void deleteGraph_cmd(pnode* head);
