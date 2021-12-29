@@ -2,102 +2,52 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define int numOfNodes;
+#define TRUE 1
+#define FALSE 0
 
-
-void build_graph_cmd(pnode *head) {
-    int len = 0;
-    scanf("%c", &len);
-    pnode temp;
-    temp = *head;
-    pnode n;
-    n = (node*)malloc(len*sizeof(node));
-    if(n == NULL){ // if there is no place in memory to allocate
+void build_graph_cmd(pgraph g) {
+    pnode head;
+    head = (pnode) malloc(sizeof(node));
+    if (head == NULL) { // if there is no place in memory to allocate
         printf("Memory not allocated");
-        exit();
+        exit(1);
     }
-    for(int i=0; i<len; i++){
+    head->next = NULL;
+    head->edges = NULL;
+    head->node_num = NULL;
+    head->numOfEdges = NULL;
+    int len = 0;
+    g->nodes = head;
+    scanf("%d", &len);
+    g->nodeSize = len;
+    pnode *temp;
+    temp = (pnode *) malloc(sizeof(pnode));
+    temp = &(g->nodes);
+    for (int i = 0; i < len; i++) {
+        pnode newNode = create_node(i);
+        if (i == 0) {
+            g->nodes = newNode;
+            temp = &(newNode->next);
 
-    }
+        } else {
+            newNode->next = *temp;
+            *temp = newNode;
+            temp = &(newNode->next);
 
-    int input=0;
-    int cur = 0;
-    scanf("%d", &input);
-    n.node_num = input;
-    n->edges = NULL;
-    pedge e = n->edges;
-
-    while(cur < num){ // n value in ASCII
-        scanf("%d", &input);
-        if(input == 110){
-            next = (node*)malloc(sizeof(node));
-            n->next = next;
-            pedge e = next->edges;
-            n = next;
-            cur++;
         }
-
-        e = (edge*)malloc(sizeof(edge_));
-        e.endpoint = input;
-        scanf("%d", &input);
-        e.weight = input;
-        e->next=NULL;
-        e=e->next;
-
     }
+    int num=g->nodes[2].node_num;
+    char cur;
+//    scanf("%d", &cur);
+//    if(cur == 'n'){
+//
+//    }
 
-    //n->edges = e;
-
-    if(temp == NULL){  // if this is a new list
-        head = n;
-    }
-
-    else{
-        temp.next = n;
-    }
 
 
 }
 
 void insert_node_cmd(pnode *head) {
-    pnode n;
-    n = (node*)malloc(sizeof(node));
-    if(n == NULL){ // if there is no place in memory to allocate
-        printf("Memory not allocated");
-        exit();
-    }
-
-    int input=0;
-    scanf("%d", &input);
-    n.node_num = input;
-    n->edges =NULL;
-    pedge e = n->edges;
-
-    while(input != 110){ // n value in ASCII
-        scanf("%d", &input);
-        if(input == 110){
-            break;
-        }
-
-        e = (edge*)malloc(sizeof(edge_));
-        e.endpoint = input;
-        scanf("%d", &input);
-        e.weight = input;
-        e->next=NULL;
-        e=e->next;
-
-    }
-
-    n->edges = e;
-
-    if(temp == NULL){  // if this is a new list
-        head = n;
-    }
-
-    else{
-        node temp = *head;
-        temp.next = n;
-    }
 
 }
 
@@ -105,11 +55,11 @@ void delete_node_cmd(pnode *head) {
 
 }
 
-void printGraph_cmd(pnode head){//for self debug
+void printGraph_cmd(pnode head) {//for self debug
 
 }
 
-void deleteGraph_cmd(pnode* head){
+void deleteGraph_cmd(pnode *head) {
 
 
 }
@@ -122,7 +72,109 @@ void TSP_cmd(pnode head) {
 
 }
 
-void setNumOfNodes(int num){
-    numOfNodes = num;
+pnode create_node(int id) {
+    pnode n;
+    n = (pnode) malloc(sizeof(struct Node));
+    if (n == NULL) { // if there is no place in memory to allocate
+        printf("Memory not allocated");
+        exit(1);
+    }
+    n->node_num = id;
+    n->edges = NULL;
+    n->next = NULL;
+    return n;
 }
-#endif
+
+void create_edge(pedge *e, int endpoint) {
+
+    pedge newEdge;
+    newEdge = (pedge) malloc(sizeof(edge));
+    if (newEdge == NULL) { // if there is no place in memory to allocate
+        printf("Memory not allocated");
+        exit(1);
+    }
+
+    pedge temp;
+    temp = (pedge) malloc(sizeof(edge));
+    if (temp == NULL) { // if there is no place in memory to allocate
+        printf("Memory not allocated");
+        exit(1);
+    }
+
+    newEdge->endpoint = endpoint;
+    int w = 0;
+    scanf("%d", &w);
+    newEdge->weight = w;
+    newEdge->next = NULL;
+
+    if (e == NULL) {
+        e = newEdge;
+    } else {
+        temp = newEdge;
+        while (temp->next != NULL) {
+            temp = temp->next;
+        }
+        newEdge->next = temp;
+    }
+
+    free(temp);
+
+}
+
+
+
+int main() {
+    pgraph g;
+    g = (pgraph) malloc(sizeof(graph));
+    if (g == NULL) { // if there is no place in memory to allocate
+        printf("Memory not allocated");
+        exit(1);
+    }
+//    pnode head;
+//    head = (node*)malloc(sizeof(node));
+//    if(head == NULL){ // if there is no place in memory to allocate
+//        printf("Memory not allocated");
+//        exit();
+//    }
+//
+//    g.nodes = head;
+    char input = 'A';
+
+    while (1) {
+        // scanf("%c", &input);
+        switch (input) {
+            case 'A':
+                if (g->nodes != NULL) {
+                    deleteGraph_cmd(&g->nodes);
+                } else {
+                    build_graph_cmd(&g->nodes);
+                }
+
+                break;
+
+            case 'B':
+
+                break;
+
+            case 'n':
+
+                break;
+
+            case 'D':
+
+                break;
+
+            case 'S':
+
+                break;
+
+            case 'T':
+
+                break;
+        }
+    }
+
+
+    return 0;
+}
+

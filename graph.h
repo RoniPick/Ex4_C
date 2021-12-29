@@ -3,22 +3,36 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct GRAPH_NODE_ *pnode;;
+typedef struct Node *pnode;;
+
+//typedef struct edge_ {
+//    int weight;
+//    pnode endpoint;
+//    struct edge_ *next;
+//} edge, *pedge;
 
 typedef struct edge_ {
     int weight;
-    pnode endpoint;
+    int endpoint;
     struct edge_ *next;
 } edge, *pedge;
 
-
-typedef struct GRAPH_NODE_ {
+typedef struct Node{
     int node_num;
     pedge edges;
-    struct GRAPH_NODE_ *next;
+    struct Node *next;
+    int numOfEdges;
 } node, *pnode;
 
-void build_graph_cmd(pnode *head);
+
+typedef struct GRAPH_{
+    pnode nodes;
+    int nodeSize;
+    int edgeSize;
+
+} graph, *pgraph;
+
+void build_graph_cmd(pgraph g);
 void insert_node_cmd(pnode *head);
 void delete_node_cmd(pnode *head);
 void printGraph_cmd(pnode head); //for self debug
@@ -27,4 +41,7 @@ void shortsPath_cmd(pnode head);
 void TSP_cmd(pnode head);
 
 void setNumOfNodes(int num);
+void isIn(int node_id);
+pnode create_node(int id);
+void create_edge(pedge *edge, int endpoint);
 #endif
