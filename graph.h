@@ -25,10 +25,11 @@ void insert_node_cmd(pnode *head, int i, int dest, int w) ;
 void delete_node_cmd(pnode *head, int id);
 void printGraph_cmd(pnode head); //for self debug
 void deleteGraph_cmd(pnode* head);
-void shortsPath_cmd(pnode *head, int src, int dest);
+int shortsPath_cmd(pnode *head, int src, int dest);
 void TSP_cmd(pnode *head);
 
 void create_node(pnode *head, int id);
 void add_edge(pnode *head, int src, int dest, int w);
-
+void swap(int *x, int *y);
+void permute(pnode *head, int *a, int start, int end);
 #endif

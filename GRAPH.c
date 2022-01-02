@@ -6,7 +6,7 @@
 #include "Queue.c"
 
 #define infinity INT_MAX;
-
+static int tsp=INT_MAX;
 static int size=0;
 void build_graph_cmd(pnode *head) {
     if(head == NULL){
@@ -228,7 +228,7 @@ void deleteGraph_cmd(pnode* head) {
     free(*temp);
 }
 
-void shortsPath_cmd(pnode *head, int src, int dest) {
+int shortsPath_cmd(pnode *head, int src, int dest) {
     int dist[size];
     int visited[size];
     for(int i=0; i<size; i++){
@@ -264,11 +264,18 @@ void shortsPath_cmd(pnode *head, int src, int dest) {
     free(q->arr);
     free(q);
 
-    printf("Dijsktra shortest path:%d", dist[dest]);
+    //printf("Dijsktra shortest path: %d\n", dist[dest]);
+    return dist[dest];
 }
 
 void TSP_cmd(pnode *head) {
-
+    int len = 3;
+    pnode *temp = head;
+    int arr[3] = {2, 1, 3};
+    tsp = INT_MAX;
+    permute(head, arr, 0, len-1);
+    printf("TSP shortest path: %d\n", tsp);
+    tsp = INT_MAX;
 }
 
 void create_node(pnode *head, int id) {
@@ -333,3 +340,34 @@ void add_edge(pnode *head, int src, int dest, int w){
     temp->numOfEdges++;
 
 }
+
+void swap(int *x, int *y) {
+    int temp = *x;
+    *x = *y;
+    *y = temp;
+}
+
+void permute(pnode *head, int *a, int start, int end) {
+    if (start == end){
+        int sum = 0;
+        int j=1;
+        for(int i=0; i<end-1; i++){
+            if(j<=end){
+                sum += shortsPath_cmd(head, i, j);
+                j++;
+            }
+        }
+        if(sum<tsp){
+            tsp = sum;
+        }
+    }
+
+    else{
+        for(int i = start; i <= end; i++){
+            swap((a+start), (a+i));
+            permute(head, a, start+1, end);
+            swap((a+start), (a+i)); //backtrack
+        }
+    }
+}
+

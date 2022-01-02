@@ -19,7 +19,14 @@ int main(void) {
     add_edge(&head, 1, 0, 2);
     add_edge(&head, 2, 0, 4);
     add_edge(&head, 2, 1, 1);
-    shortsPath_cmd(&head, 2, 0);
+    TSP_cmd(&head);
+//    add_edge(&head,0 , 2, 5);
+//    add_edge(&head,0 , 3, 3);
+//    add_edge(&head, 1, 3, 7);
+//    add_edge(&head, 1, 0, 2);
+//    add_edge(&head, 2, 0, 4);
+//    add_edge(&head, 2, 1, 1);
+//    shortsPath_cmd(&head, 2, 0);
 
 //    insert_node_cmd(head, 4, 3, 10);
 //    insert_node_cmd(head, 1, 0, 10);
