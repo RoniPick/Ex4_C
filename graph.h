@@ -3,13 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct Node *pnode;;
-
-//typedef struct edge_ {
-//    int weight;
-//    pnode endpoint;
-//    struct edge_ *next;
-//} edge, *pedge;
+typedef struct GRAPH_NODE_ *pnode;;
 
 typedef struct edge_ {
     int weight;
@@ -17,31 +11,24 @@ typedef struct edge_ {
     struct edge_ *next;
 } edge, *pedge;
 
-typedef struct Node{
+
+typedef struct GRAPH_NODE_ {
     int node_num;
     pedge edges;
-    struct Node *next;
     int numOfEdges;
+    struct GRAPH_NODE_ *next;
 } node, *pnode;
 
 
-typedef struct GRAPH_{
-    pnode nodes;
-    int nodeSize;
-    int edgeSize;
-
-} graph, *pgraph;
-
-void build_graph_cmd(pgraph g);
-void insert_node_cmd(pgraph g);
-void delete_node_cmd(pnode *head);
+void build_graph_cmd(pnode *head);
+void insert_node_cmd(pnode *head, int i, int dest, int w) ;
+void delete_node_cmd(pnode *head, int id);
 void printGraph_cmd(pnode head); //for self debug
 void deleteGraph_cmd(pnode* head);
-void shortsPath_cmd(pnode head);
-void TSP_cmd(pnode head);
+void shortsPath_cmd(pnode *head, int src, int dest);
+void TSP_cmd(pnode *head);
 
-void setNumOfNodes(int num);
-void isIn(int node_id);
-pnode create_node(int id);
-void create_edge(pedge *edge, int endpoint);
+void create_node(pnode *head, int id);
+void add_edge(pnode *head, int src, int dest, int w);
+
 #endif
