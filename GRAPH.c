@@ -275,7 +275,7 @@ void TSP_cmd(pnode *head) {
     tsp = INT_MAX;
     permute(head, arr, 0, len-1);
     printf("TSP shortest path: %d\n", tsp);
-    tsp = INT_MAX;
+
 }
 
 void create_node(pnode *head, int id) {
