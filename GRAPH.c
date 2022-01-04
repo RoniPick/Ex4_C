@@ -270,7 +270,7 @@ void TSP_cmd(pnode *head, int len, int arr[]) {
     if (tsp == INT_MAX) {
         tsp = -1;
     }
-    printf("TSP shortest path: %d ", tsp);
+    printf("TSP shortest path: %d \n", tsp);
 //    printf("\n");
     tsp = INT_MAX;
 }
