@@ -5,109 +5,76 @@
 #include <ctype.h>
 #include "Queue.c"
 
-#define infinity INT_MAX;
-static int tsp=INT_MAX;
-static int size=0;
-void build_graph_cmd(pnode *head) {
-    if(head == NULL){
-        pnode *temp = (pnode*)malloc(sizeof(node));
-        if(temp == NULL){ // if there is no place in memory to allocate
+int infinity = INT_MAX;
+static int tsp = INT_MAX;
+static int size = 0;
+int max_id = 0;
+
+void build_graph_cmd(pnode *head, int len) {
+    if (*head == NULL) {
+        pnode *temp = (pnode *) malloc(sizeof(pnode));
+        if (temp == NULL) { // if there is no place in memory to allocate
             printf("Memory not allocated");
             exit(1);
         }
-        head = temp;
+        *head = *temp;
     }
-
-    int len = 4;
-    // scanf("%d", &len);
 
     for (int i = 0; i < len; i++) {
         create_node(&(*head), i);
     }
 
-    //   pnode *temp = head;
-//    int i=0;
-//    int dest = 4;
-//    int w = 0;
-//    while((*temp)->node_num!=i){
-//        *temp = (*temp)->next;
-//    }
-//    add_edge(temp, dest, w);
-    // insert_node_cmd(temp, i, dest, w);
-//    char cur = ' ';
-//    scanf("%c", &cur); // scanning the space - ' '
-//    scanf("%c", &cur);
-//    while(cur == 'n'){
-//        scanf("%c", &cur);
-//        while(cur>=48 && cur<=57){
-//            cur = cur-48;
-//            while(temp->node_num!=cur){
-//                temp = temp->next;
-//            }
-//
-//        }
-//    }
-
-
-
 }
 
-void insert_node_cmd(pnode *head, int i, int dest, int w) {
-    int id = i;
+void insert_node_cmd(pnode *head, int src) {
+    int id = src;
     pnode temp = *head;
-    pedge *p = (pedge*) malloc(sizeof(edge));
+    pedge *p = (pedge *) malloc(sizeof(struct edge_));
     if (p == NULL) { // if there is no place in memory to allocate
         printf("Memory not allocated");
         exit(1);
     }
 
-    if(size == 0){
+    if (size == 0) {
         create_node(&temp, id);
         *p = temp->edges;
-        *p = (pedge)malloc(sizeof(edge));
-        (*p)->endpoint = dest;
-        (*p)->weight = w;
+        *p = (pedge) malloc(sizeof(edge));
         temp->edges = *p;
         temp->edges->next = NULL;
         temp->numOfEdges++;
-    }
-    else{
-        int counter=0;
+    } else {
+        int counter = 0;
         int bool = 0;
-        while(counter<size){
-            if(temp->node_num != id){
-                if(size==1){
+        while (counter < size) {
+            if (temp->node_num != id) {
+                if (size == 1) {
                     break;
-                }
-                else{
-                    if(temp->next == NULL){
+                } else {
+                    if (temp->next == NULL) {
                         create_node(&temp, id);
                         temp = temp->next;
                         break;
-                    }
-                    else{
+                    } else {
                         temp = temp->next;
                         counter++;
                     }
                 }
 
-            }
-            else if(temp->node_num == id){
+            } else if (temp->node_num == id) {
                 bool = 1;
                 break;
             }
         }
 
-        if (bool == 1){
-            while(temp->numOfEdges>0){
+        if (bool == 1) {
+            while (temp->numOfEdges > 0) {
                 temp->numOfEdges--;
+                pedge next = temp->edges->next;
                 free(temp->edges);
-                temp->edges = temp->edges->next;
+                temp->edges = next;
 
             }
         }
-
-        add_edge(&temp, i, dest, w);
 
     }
 
@@ -116,52 +83,60 @@ void insert_node_cmd(pnode *head, int i, int dest, int w) {
 
 void delete_node_cmd(pnode *head, int id) {
     pnode temp = *head;
-    edge *p = temp->edges;
-    if(temp == NULL){
+    pedge p = temp->edges;
+    if (temp == NULL) {
         return;
     }
     //if the node is the head of the list
-    if(temp->node_num == id){
-        while(temp->numOfEdges>0){
+    if (temp->node_num == id) {
+        while (temp->numOfEdges > 0) {
+            pedge next_e = temp->edges->next;
             free(temp->edges);
-            temp->edges = temp->edges->next;
+            temp->edges = next_e;
             temp->numOfEdges--;
         }
-
+        pnode next_head = (*head)->next;
         free(*head);
-        (*head) = (*head)->next;
+        (*head) = next_head;
         size--;
 
-    }
-    else{
+    } else {
         // finding the prev node
-        while(temp->next->node_num!=id){
+        while (temp->next->node_num != id) {
             temp = temp->next;
         }
+        p = temp->next->edges;
         // removing the node's edges
-        while(temp->next->numOfEdges>0){
-            free(temp->next->edges);
-            temp->next->edges = temp->next->edges->next;
+        while (temp->next->numOfEdges > 0) {
+            pedge cur = p->next;
+            free(p);
+            if (cur != NULL) {
+                p = cur;
+            }
             temp->next->numOfEdges--;
+            //temp->next->edges = temp->next->edges->next;
+
         }
+        p = NULL;
+        pnode next_node = temp->next->next;
         free(temp->next);
-        temp->next = temp->next->next;
-        temp = temp->next;
+        temp->next = next_node;
+
         size--;
     }
     temp = *head;
     p = temp->edges;
 
     // a loop to remove all the edges to the node we're removing
-    while(temp!=NULL){
-        while(p != NULL){
+    while (temp != NULL) {
+        while (p != NULL) {
             // no edges
-            if((temp)->numOfEdges == 0){
+            if ((temp)->numOfEdges == 0) {
                 break;
             }
                 // if there is only one edge from the node
-            else if((temp)->numOfEdges == 1){
-                if(p->endpoint == id){
+            else if ((temp)->numOfEdges == 1) {
+                if (p->endpoint == id) {
                     free(p);
                     temp->numOfEdges--;
                     temp->edges = NULL;
@@ -170,9 +145,9 @@ void delete_node_cmd(pnode *head, int id) {
 
             }
                 // if there is more them one edge from the node
-            else{
+            else {
                 // if this is the first node in the list
-                if(p->endpoint == id && p->next != NULL){
+                if (p->endpoint == id && p->next != NULL) {
                     edge *cur = p->next;
                     free(p);
                     *p = *cur;
@@ -180,28 +155,35 @@ void delete_node_cmd(pnode *head, int id) {
                     break;
                 }
                     // a node in the middle
-                else if(p->next != NULL && p->next->endpoint == id ){
-                    if(p->next->next == NULL){
+                else if (p->next != NULL && p->next->endpoint == id) {
+                    if (p->next->next == NULL) {
                         free(p->next);
                         temp->numOfEdges--;
-                    }
-                    else{
+                        p->next = NULL;
+                    } else {
                         edge *cur = p->next->next;
                         free(p->next);
                         p->next = cur;
                         temp->numOfEdges--;
                     }
                     break;
-                }
-
-                else{
+                } else {
                     p = p->next;
                 }
             }
         }
         temp = (temp)->next;
-        if(temp!=NULL){
+        if (temp != NULL) {
             p = (temp)->edges;
+        }
+    }
+
+    if(id == max_id){
+        max_id = 0;
+        while(temp!=NULL){
+            if(temp->node_num > max_id){
+                max_id = temp->node_num;
+            }
         }
     }
 }
@@ -210,47 +192,53 @@ void printGraph_cmd(pnode head) { //for self debug
 
 }
 
-void deleteGraph_cmd(pnode* head) {
-    pnode *temp = head;
-
-    while (*head != NULL){
-        while((*temp)->numOfEdges>0){
-            free((*temp)->edges);
-            (*temp)->edges = (*temp)->edges->next;
-            (*temp)->numOfEdges--;
+void deleteGraph_cmd(pnode *head) {
+    pnode temp = *head;
+    while (temp != NULL) {
+        while ((temp)->numOfEdges > 0) {
+            if ((temp)->edges->next != NULL) {
+                pedge next_edge = (temp)->edges->next;
+                free((temp)->edges);
+                (temp)->edges = next_edge;
+                (temp)->numOfEdges--;
+            } else {
+                free((temp)->edges);
+                (temp)->edges = NULL;
+                (temp)->numOfEdges--;
+            }
         }
-
-        free(*head);
+        pnode next_node = (temp)->next;
+        free(temp);
+        (temp)->edges = NULL;
+        temp = next_node;
+        *head = temp;
         size--;
-        *temp = (*head)->next;
-        *head = *temp;
     }
-    free(*temp);
 }
 
 int shortsPath_cmd(pnode *head, int src, int dest) {
-    int dist[size];
-    int visited[size];
-    for(int i=0; i<size; i++){
-        dist[i] = infinity;
+    pnode temp = (*head);
+    int dist[max_id + 1];
+    int visited[max_id + 1];
+    for (int i = 0; i < max_id + 1; i++) {
+        dist[i] = INT_MAX;
         visited[i] = 0;
     }
     dist[src] = 0;
-    struct Queue* q = creatQueue(size);
-    pnode temp = (*head);
+    struct Queue *q = creatQueue(max_id+1);
+    int len = 0;
     enqueue(q, src);
-    int len=0;
-    while(!isEmpty(q)){
+    while (!isEmpty(q)) {
         int curNode = dequeue(q);
-        if(visited[curNode] == 0){
-            while(temp->node_num != curNode){
+        if (visited[curNode] == 0) {
+            while (temp->node_num != curNode) {
                 temp = (temp)->next;
             }
             pedge edge = (temp)->edges;
-            while(edge != NULL){
+            while (edge != NULL) {
                 len = edge->weight + dist[curNode]; // first node + weight of the edge
                 int curLen = dist[edge->endpoint]; // the edge end point wight
-                if(len < curLen){
+                if (len < curLen) {
                     dist[edge->endpoint] = len;
                     enqueue(q, edge->endpoint);
                 }
@@ -263,23 +251,31 @@ int shortsPath_cmd(pnode *head, int src, int dest) {
 
     free(q->arr);
     free(q);
+    if (visited[dest] == 0) {
+        return INT_MAX;
+    }
+    else {
+        return dist[dest];
+    }
 
-    //printf("Dijsktra shortest path: %d\n", dist[dest]);
-    return dist[dest];
 }
 
-void TSP_cmd(pnode *head) {
-    int len = 3;
-    pnode *temp = head;
-    int arr[3] = {2, 1, 3};
+void TSP_cmd(pnode *head, int len, int arr[]) {
+    pnode temp = *head;
     tsp = INT_MAX;
-    permute(head, arr, 0, len-1);
+    permute(&temp, arr, 0, len - 1);
+    if (tsp == INT_MAX) {
+        tsp = -1;
+    }
     printf("TSP shortest path: %d\n", tsp);
-
+    tsp = INT_MAX;
 }
 
 void create_node(pnode *head, int id) {
-    pnode n = (pnode) malloc(sizeof(node));
+    if (max_id < id) {
+        max_id = id;
+    }
+    pnode n = (node *) malloc(sizeof(node));
     if (n == NULL) { // if there is no place in memory to allocate
         printf("Memory not allocated");
         exit(1);
@@ -287,16 +283,15 @@ void create_node(pnode *head, int id) {
     n->node_num = id;
     n->edges = NULL;
     n->next = NULL;
+    n->numOfEdges = 0;
 
-    if(size == 0){
-        head = &n;
+    if (size == 0) {
+        *head = n;
         size++;
 
-    }
-
-    else{
+    } else {
         pnode temp = *head;
-        while(temp->next!=NULL){
+        while (temp->next != NULL) {
             temp = temp->next;
         }
         temp->next = n;
@@ -305,38 +300,39 @@ void create_node(pnode *head, int id) {
 
 }
 
-void add_edge(pnode *head, int src, int dest, int w){
+void add_edge(pnode *head, int src, int dest, int w) {
     pnode temp = *head;
-    pedge *p = (pedge*) malloc(sizeof(edge));
+    pedge *p = (pedge *) malloc(sizeof(struct edge_));
     if (p == NULL) { // if there is no place in memory to allocate
         printf("Memory not allocated");
         exit(1);
     }
-
-    while(temp->node_num != src){
-        temp = temp->next;
+    if (temp->numOfEdges > 0) {
+        while (temp->node_num != src) {
+            temp = temp->next;
+        }
     }
-
     *p = temp->edges;
     int counter = 0;
     int boo = 0;
-    if(temp->numOfEdges > 0) {
+    if ((*p) != NULL) {
         while ((*p)->next != NULL) {
             (*p) = (*p)->next;
             counter++;
         }
-        (*p)->next = (pedge)malloc(sizeof(edge));
+        (*p)->next = (pedge) malloc(sizeof(edge));
         (*p) = (*p)->next;
         boo = 1;
     }
 
-    if (boo == 0){
-        (*p) = (pedge)malloc(sizeof(edge));
+    if (boo == 0) {
+        (*p) = (pedge) malloc(sizeof(edge));
         temp->edges = *p;
     }
 
     (*p)->endpoint = dest;
     (*p)->weight = w;
+    (*p)->next = NULL;
     temp->numOfEdges++;
 
 }
@@ -348,26 +344,41 @@ void swap(int *x, int *y) {
 }
 
 void permute(pnode *head, int *a, int start, int end) {
-    if (start == end){
+    if (start == end) {
         int sum = 0;
-        int j=1;
-        for(int i=0; i<end-1; i++){
-            if(j<=end){
-                sum += shortsPath_cmd(head, i, j);
-                j++;
+        int j = 1;
+        for (int i = 0; i <= end; ++i) {
+            if (j <= end) {
+                int **p = &a;
+                int s = *(i + *p);
+                int d = (*(j + *p));
+                if((s==3 || s==0) && (d==3||d==0)){
+                    int x=0;
+                    int y=0;
+                }
+                int temp = shortsPath_cmd(head, s, d);
+                if (temp == INT_MAX) {
+                    sum = INT_MAX;
+                    return;
+                } else {
+                    sum = sum + temp;
+                    j++;
+                }
             }
         }
-        if(sum<tsp){
+        if (sum < tsp) {
             tsp = sum;
         }
-    }
 
-    else{
-        for(int i = start; i <= end; i++){
-            swap((a+start), (a+i));
-            permute(head, a, start+1, end);
-            swap((a+start), (a+i)); //backtrack
+    } else {
+        for (int i = start; i <= end; i++) {
+            swap((a + start), (a + i));
+            permute(head, a, start + 1, end);
+            swap((a + start), (a + i)); //backtrack
         }
     }
 }
 
+int getSize(pnode *head) {
+    return size;
+}

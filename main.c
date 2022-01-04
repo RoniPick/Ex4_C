@@ -5,91 +5,226 @@
 
 
 int main(void) {
-    pnode mainHead = (node*)malloc(sizeof(node));
-    if(mainHead == NULL){ // if there is no place in memory to allocate
+    pnode mainHead = (node *) malloc(sizeof(node));
+    if (mainHead == NULL) { // if there is no place in memory to allocate
         printf("Memory not allocated");
         exit(1);
     }
 
     pnode head = mainHead;
-    build_graph_cmd(&head);
-    add_edge(&head,0 , 2, 5);
-    add_edge(&head,0 , 3, 3);
-    add_edge(&head, 1, 3, 7);
-    add_edge(&head, 1, 0, 2);
-    add_edge(&head, 2, 0, 4);
-    add_edge(&head, 2, 1, 1);
-    TSP_cmd(&head);
-//    add_edge(&head,0 , 2, 5);
-//    add_edge(&head,0 , 3, 3);
-//    add_edge(&head, 1, 3, 7);
-//    add_edge(&head, 1, 0, 2);
-//    add_edge(&head, 2, 0, 4);
-//    add_edge(&head, 2, 1, 1);
-//    shortsPath_cmd(&head, 2, 0);
 
-//    insert_node_cmd(head, 4, 3, 10);
-//    insert_node_cmd(head, 1, 0, 10);
-//    add_edge(head, 2, 3);
-//    add_edge(head, 1, 3);
+    char input = 0;
+    scanf("%c", &input);
 
-//    delete_node_cmd(head, 2);
-//    deleteGraph_cmd(head);
-//    build_graph_cmd(head);
-//    insert_node_cmd(head, 2, 2, 1);
-//    insert_node_cmd(head, 4, 1, 2);
-//    delete_node_cmd(head, 0);
+    while (1) {
+        switch (input) {
+            case 'A':
+                scanf("%c", &input);
+                if (input == ' ') {
+                    scanf("%c", &input);
+                }
+                if (getSize((&head)) != 0) {
+                    deleteGraph_cmd(&head);
+                    mainHead = (node *) malloc(sizeof(node));
+                    head = mainHead;
+                    input = caseA(&head, input);
+                } else {
+                    input = caseA(&head, input);
+                }
 
-//    char input = 0;
-//
-//    while(1){
-//        scanf("%c", &input);
-//        switch (input) {
-//            case 'A':
-//                if (input != NULL){
-//                    deleteGraph_cmd(head);
-//                }
-//                else{
-//                    build_graph_cmd(head);
-//                }
-//
-//                break;
-//
-//            case 'B':
-//                scanf("%d", &input);
-//                int id = input;
-//                scanf("%d", &input);
-//                int dest = input;
-//                scanf("%d", &input);
-//                int w = input;
-//                insert_node_cmd(head, id, dest, w);
-//
-//
-//
-//
-//
-//                break;
-//
-//            case 'n':
-//
-//                break;
-//
-//            case 'D':
-//
-//                break;
-//
-//            case 'S':
-//
-//                break;
-//
-//            case 'T':
-//
-//                break;
-//        }
-//    }
+                break;
 
+            case 'B':
+                scanf("%c", &input);
+                if (input == ' ') {
+                    scanf("%c", &input);
+                }
+                if (isdigit(input)) {
+                    input = caseB(&head, input);
+                }
 
+                break;
 
+            case 'D':
+                scanf("%c", &input);
+                if (input == ' ') {
+                    scanf("%c", &input);
+                }
+
+                if (isdigit(input)) {
+                    input = caseD(&head, input);
+                }
+
+                break;
+
+            case 'S':
+                scanf("%c", &input);
+                if (input == ' ') {
+                    scanf("%c", &input);
+                }
+
+                if (isdigit(input)) {
+                    input = caseS(&head, input);
+                }
+                break;
+
+            case 'T':
+                scanf("%c", &input);
+                if (input == ' ') {
+                    scanf("%c", &input);
+                }
+
+                if (isdigit(input)) {
+                    input = caseT(&head, input);
+                }
+
+                break;
+
+            default:
+                return 0;
+        }
+    }
 
     return 0;
+}
+
+char caseA(pnode *head, char input) {
+    if (input == ' ') {
+        scanf("%c", &input);
+    }
+
+    if (isdigit(input)) {
+        build_graph_cmd(&(*head), input - '0');
+    }
+
+    scanf("%c", &input);
+    if (input == ' ') {
+        scanf("%c", &input);
+    }
+
+    if (input == 'n') {
+
+        while (input < 65 || input > 90) { // while we don't get an upper char
+            if (input == 'n') {
+                scanf("%c", &input);
+                if (input == ' ') {
+                    scanf("%c", &input);
+                }
+                int src = 0;
+                int dest = 0;
+                int w = 0;
+                if (isdigit(input)) {
+                    src = input - '0';
+                }
+                scanf("%c", &input);
+                if (input == ' ') {
+                    scanf("%c", &input);
+                }
+                while (input != 'n' && (input < 65 || input > 90)) {
+                    if (isdigit(input)) {
+                        dest = input - '0';
+                    }
+                    scanf("%c", &input);
+                    if (input == ' ') {
+                        scanf("%c", &input);
+                    }
+                    if (isdigit(input)) {
+                        w = input - '0';
+                    }
+
+                    add_edge(head, src, dest, w);
+                    scanf("%c", &input);
+                    if (input == ' ') {
+                        scanf("%c", &input);
+                    }
+                }
+
+            }
+        }
+    }
+    return input;
+}
+
+char caseB(pnode *head, char input) {
+    int src = input - '0';
+    int dest = 0;
+    int w = 0;
+
+    insert_node_cmd(head, src); // inserting the node to the graph
+    scanf("%c", &input);
+    //inserting the edges
+    while (input < 65 || input > 90) { // while we don't get an upper char
+        dest = 0;
+        w = 0;
+        if (input == ' ') {
+            scanf("%c", &input);
+        }
+        if (isdigit(input)) {
+            dest = input - '0';
+        }
+        scanf("%c", &input);
+        if (input == ' ') {
+            scanf("%c", &input);
+        }
+        if (isdigit(input)) {
+            w = input - '0';
+        }
+        add_edge(head, src, dest, w);
+        scanf("%c", &input);
+        if (input == ' ') {
+            scanf("%c", &input);
+        }
+    }
+    return input;
+}
+
+char caseD(pnode *head, char input) {
+    delete_node_cmd(&(*head), input - '0');
+    scanf("%c", &input);
+    if (input == ' ') {
+        scanf("%c", &input);
+    }
+    return input;
+}
+
+char caseT(pnode *head, char input) {
+    int len = input - '0';
+    int counter = 0;
+    int arr[len];
+    while (counter < len) {
+        scanf("%c", &input);
+        if (input == ' ') {
+            scanf("%c", &input);
+        }
+        if (isdigit(input)) {
+            arr[counter] = input - '0';
+        }
+        counter++;
+    }
+    TSP_cmd(head, len, arr);
+    scanf("%c", &input);
+    if (input == ' ') {
+        scanf("%c", &input);
+    }
+    return input;
+}
+
+char caseS(pnode *head, char input) {
+    int src = input - '0';
+    int dest = 0;
+    scanf("%c", &input);
+    if (input == ' ') {
+        scanf("%c", &input);
+    }
+    if (isdigit(input)) {
+        dest = input - '0';
+    }
+    int len = shortsPath_cmd(head, src, dest);
+    printf("Dijsktra shortest path: %d\n", len);
+
+    scanf("%c", &input);
+    if (input == ' ') {
+        scanf("%c", &input);
+    }
+    return input;
 }
