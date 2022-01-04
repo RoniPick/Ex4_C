@@ -22,6 +22,9 @@ void build_graph_cmd(pnode *head, int len) {
 
     for (int i = 0; i < len; i++) {
         create_node(&(*head), i);
+        if(i>max_id){
+            max_id = i;
+        }
     }
 
 }
