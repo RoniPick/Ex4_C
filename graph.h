@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct GRAPH_NODE_ *pnode;
+typedef struct GRAPH_NODE_ *pnode;;
 
 typedef struct edge_ {
     int weight;
@@ -32,6 +32,7 @@ void add_edge(pnode *head, int src, int dest, int w);
 void swap(int *x, int *y);
 void permute(pnode *head, int *a, int start, int end);
 void checkSum(pnode *head, int *a, int start, int end);
+//void permute(pnode *head, int a[], int start, int end, int len);
 int getSize(pnode *head);
 
 char caseA(pnode *head, char input);

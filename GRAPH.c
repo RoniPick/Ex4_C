@@ -5,7 +5,6 @@
 #include <ctype.h>
 #include "Queue.c"
 
-int infinity = INT_MAX;
 static int tsp = INT_MAX;
 static int size = 0;
 int max_id = 0;
@@ -22,9 +21,6 @@ void build_graph_cmd(pnode *head, int len) {
 
     for (int i = 0; i < len; i++) {
         create_node(&(*head), i);
-        if(i>max_id){
-            max_id = i;
-        }
     }
 
 }
@@ -73,7 +69,7 @@ void insert_node_cmd(pnode *head, int src) {
             while (temp->numOfEdges > 0) {
                 temp->numOfEdges--;
                 pedge next = temp->edges->next;
-                free(temp->edges);
+                //free(temp->edges);
                 temp->edges = next;
 
             }
@@ -86,7 +82,7 @@ void insert_node_cmd(pnode *head, int src) {
 
 void delete_node_cmd(pnode *head, int id) {
     pnode temp = *head;
-    pedge p = temp->edges;
+    pedge p;
     if (temp == NULL) {
         return;
     }
@@ -94,7 +90,7 @@ void delete_node_cmd(pnode *head, int id) {
     if (temp->node_num == id) {
         while (temp->numOfEdges > 0) {
             pedge next_e = temp->edges->next;
-            free(temp->edges);
+            // free(temp->edges);
             temp->edges = next_e;
             temp->numOfEdges--;
         }
@@ -112,7 +108,7 @@ void delete_node_cmd(pnode *head, int id) {
         // removing the node's edges
         while (temp->next->numOfEdges > 0) {
             pedge cur = p->next;
-            free(p);
+            // free(p);
             if (cur != NULL) {
                 p = cur;
             }
@@ -122,7 +118,7 @@ void delete_node_cmd(pnode *head, int id) {
         }
         p = NULL;
         pnode next_node = temp->next->next;
-        free(temp->next);
+        // free(temp->next);
         temp->next = next_node;
 
         size--;
@@ -140,7 +136,7 @@ void delete_node_cmd(pnode *head, int id) {
                 // if there is only one edge from the node
             else if ((temp)->numOfEdges == 1) {
                 if (p->endpoint == id) {
-                    free(p);
+                    //  free(p);
                     temp->numOfEdges--;
                     temp->edges = NULL;
                 }
@@ -152,20 +148,20 @@ void delete_node_cmd(pnode *head, int id) {
                 // if this is the first node in the list
                 if (p->endpoint == id && p->next != NULL) {
                     edge *cur = p->next;
-                    free(p);
-                    *p = *cur;
+                    //free(p);
+                    p = cur;
                     temp->numOfEdges--;
                     break;
                 }
                     // a node in the middle
                 else if (p->next != NULL && p->next->endpoint == id) {
                     if (p->next->next == NULL) {
-                        free(p->next);
+                        //  free(p->next);
                         temp->numOfEdges--;
                         p->next = NULL;
                     } else {
                         edge *cur = p->next->next;
-                        free(p->next);
+                        //   free(p->next);
                         p->next = cur;
                         temp->numOfEdges--;
                     }
@@ -180,15 +176,6 @@ void delete_node_cmd(pnode *head, int id) {
             p = (temp)->edges;
         }
     }
-
-    if(id == max_id){
-        max_id = 0;
-        while(temp!=NULL){
-            if(temp->node_num > max_id){
-                max_id = temp->node_num;
-            }
-        }
-    }
 }
 
 void printGraph_cmd(pnode head) { //for self debug
@@ -201,17 +188,17 @@ void deleteGraph_cmd(pnode *head) {
         while ((temp)->numOfEdges > 0) {
             if ((temp)->edges->next != NULL) {
                 pedge next_edge = (temp)->edges->next;
-                free((temp)->edges);
+                // free((temp)->edges);
                 (temp)->edges = next_edge;
                 (temp)->numOfEdges--;
             } else {
-                free((temp)->edges);
+                // free((temp)->edges);
                 (temp)->edges = NULL;
                 (temp)->numOfEdges--;
             }
         }
         pnode next_node = (temp)->next;
-        free(temp);
+        //free(temp);
         (temp)->edges = NULL;
         temp = next_node;
         *head = temp;
@@ -220,7 +207,6 @@ void deleteGraph_cmd(pnode *head) {
 }
 
 int shortsPath_cmd(pnode *head, int src, int dest) {
-    pnode temp = (*head);
     int dist[max_id + 1];
     int visited[max_id + 1];
     for (int i = 0; i < max_id + 1; i++) {
@@ -228,16 +214,28 @@ int shortsPath_cmd(pnode *head, int src, int dest) {
         visited[i] = 0;
     }
     dist[src] = 0;
-    struct Queue *q = creatQueue(max_id+1);
-    int len = 0;
+    struct Queue *q = creatQueue(size);
+    pnode temp = (*head);
     enqueue(q, src);
+    pedge edge;
+    int len;
     while (!isEmpty(q)) {
         int curNode = dequeue(q);
         if (visited[curNode] == 0) {
-            while (temp->node_num != curNode) {
-                temp = (temp)->next;
+            if (temp->node_num == curNode) {
+                edge = temp->edges;
+            } else {
+                while (temp->node_num != curNode) {
+                    if (temp->next != NULL) {
+                        temp = (temp)->next;
+                        edge = temp->edges;
+                    } else {
+                        edge = NULL;
+                        break;
+                    }
+                }
             }
-            pedge edge = (temp)->edges;
+
             while (edge != NULL) {
                 len = edge->weight + dist[curNode]; // first node + weight of the edge
                 int curLen = dist[edge->endpoint]; // the edge end point wight
@@ -252,12 +250,11 @@ int shortsPath_cmd(pnode *head, int src, int dest) {
         visited[curNode] = 1;
     }
 
-    free(q->arr);
-    free(q);
+    // free(q->arr);
+    // free(q);
     if (visited[dest] == 0) {
         return INT_MAX;
-    }
-    else {
+    } else {
         return dist[dest];
     }
 
@@ -270,8 +267,7 @@ void TSP_cmd(pnode *head, int len, int arr[]) {
     if (tsp == INT_MAX) {
         tsp = -1;
     }
-    printf("TSP shortest path: %d \n", tsp);
-//    printf("\n");
+    printf("TSP shortest path: %d\n", tsp);
     tsp = INT_MAX;
 }
 
@@ -356,10 +352,6 @@ void permute(pnode *head, int *a, int start, int end) {
                 int **p = &a;
                 int s = *(i + *p);
                 int d = (*(j + *p));
-                if((s==3 || s==0) && (d==3||d==0)){
-                    int x=0;
-                    int y=0;
-                }
                 int temp = shortsPath_cmd(head, s, d);
                 if (temp == INT_MAX) {
                     sum = INT_MAX;

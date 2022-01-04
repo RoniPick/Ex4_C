@@ -60,7 +60,7 @@ void enqueue(struct Queue* q, int node_id){
     // and we want to add the node's id in the current place, so we need to do modulo of the size so the end will start with 0
     // and will continue until the capacity instead of the end will start from the capacity-1
     q->arr[q->end] = node_id;
-    q->queueSize=q->queueSize+1;
+    q->queueSize++;
 }
 
 //function to add a node id to the queue
