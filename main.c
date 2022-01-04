@@ -220,7 +220,8 @@ char caseS(pnode *head, char input) {
         dest = input - '0';
     }
     int len = shortsPath_cmd(head, src, dest);
-    printf("Dijsktra shortest path: %d\n", len);
+    printf("Dijsktra shortest path: %d \n", len);
+    printf("\n");
 
     scanf("%c", &input);
     if (input == ' ') {
