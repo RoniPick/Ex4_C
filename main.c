@@ -66,6 +66,9 @@ int main(void) {
                 if (isdigit(input)) {
                     input = caseS(&head, input);
                 }
+                if(input!=' '){
+                    printf("\n");
+                }
                 break;
 
             case 'T':
@@ -77,7 +80,9 @@ int main(void) {
                 if (isdigit(input)) {
                     input = caseT(&head, input);
                 }
-
+                if(input!=' '){
+                    printf("\n");
+                }
                 break;
 
             default:
@@ -220,7 +225,7 @@ char caseS(pnode *head, char input) {
         dest = input - '0';
     }
     int len = shortsPath_cmd(head, src, dest);
-    printf("Dijsktra shortest path: %d\n", len);
+    printf("Dijsktra shortest path: %d ", len);
 
     scanf("%c", &input);
     if (input == ' ') {
