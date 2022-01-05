@@ -91,8 +91,7 @@ int main(void) {
                 return 0;
         }
     }
-//    deleteGraph_cmd(&head);
-//    free(mainHead);
+
     return 0;
 }
 

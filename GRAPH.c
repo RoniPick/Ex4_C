@@ -123,7 +123,7 @@ void delete_node_cmd(pnode *head, int id) {
             }
 
         }
-        //p = NULL;
+
         pnode next_node = temp->next;
         prev->next=next_node;
         free(temp);
@@ -323,12 +323,10 @@ void add_edge(pnode *head, int src, int dest, int w) {
         }
     }
     p = (temp->edges);
-    int counter = 0;
     int boo = 0;
     if ((p) != NULL) {
         while ((p)->next != NULL) {
             (p) = (p)->next;
-            counter++;
         }
         (p)->next = (pedge) malloc(sizeof(struct edge_));
         (p) = (p)->next;
