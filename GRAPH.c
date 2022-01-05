@@ -197,7 +197,7 @@ void deleteGraph_cmd(pnode *head) {
         while (temp->numOfEdges > 0) {
             pedge next_edge = p->next;
             if (next_edge == NULL) {
-
+                free(p);
                 temp->numOfEdges--;
             }else{
                 free(p);
@@ -330,7 +330,7 @@ void add_edge(pnode *head, int src, int dest, int w) {
             (p) = (p)->next;
             counter++;
         }
-        (p)->next =(pnode) malloc(sizeof(struct edge_)); ;
+        (p)->next = (pedge) malloc(sizeof(struct edge_));
         (p) = (p)->next;
         boo = 1;
     }

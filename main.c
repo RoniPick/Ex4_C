@@ -86,10 +86,13 @@ int main(void) {
                 break;
 
             default:
+                deleteGraph_cmd(&head);
+                free(mainHead);
                 return 0;
         }
     }
-
+//    deleteGraph_cmd(&head);
+//    free(mainHead);
     return 0;
 }
 
